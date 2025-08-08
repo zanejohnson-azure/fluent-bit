@@ -23,6 +23,7 @@
  */
 
 #include <Windows.h>
+#include <shlwapi.h>
 
 #include "dirent.h"
 
@@ -78,10 +79,14 @@ struct CIO_WIN32_DIR *cio_win32_opendir(const char *path)
 {
     struct CIO_WIN32_DIR *d;
 
-    DWORD attrs = GetFileAttributesA(path);
-    if (attrs == INVALID_FILE_ATTRIBUTES || !(attrs & FILE_ATTRIBUTE_DIRECTORY)) {
+    if (!PathIsDirectoryA(path)) {
         return NULL;
     }
+
+    // DWORD attrs = GetFileAttributesA(path);
+    // if (attrs == INVALID_FILE_ATTRIBUTES || !(attrs & FILE_ATTRIBUTE_DIRECTORY)) {
+    //     return NULL;
+    // }
 
     d = calloc(1, sizeof(struct CIO_WIN32_DIR));
     if (d == NULL) {
